@@ -37,7 +37,6 @@ void *handle_packet(void *data)
 
 int listener_init(short port)
 {
-	printf("initializing\n");
 	int sockfd = socket(PF_INET, SOCK_DGRAM, 0);
 	if (sockfd < 0) {
 		return -1;
