@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <errno.h>
 
 #include <netcode.h>
 
@@ -12,22 +13,40 @@
 int main(int argc, char **argv)
 {
 	struct netcode_state netcode;
-	netcode_init(&netcode, PORT);
+	switch (netcode_init(&netcode, PORT))
+	{
+	case EAGAIN:
+		printf("Insufficient System Resources\n");
+		return -1;
+		break;
+	case EINVAL:
+		printf("Invalid thread attributes\n");
+		return -1;
+		break;
+	case EPERM:
+		printf("Invalid Permissions\n");
+		return -1;
+		break;
+	}
 
-	struct timespec time, elapsed;
-	time.tv_sec = 2;
+	int listening = 1;
 	size_t buffer_size = sizeof(char) * 512;
 	size_t touched = buffer_size;
 	char *buffer = malloc(buffer_size);
+	struct timespec time, elapsed;
+	time.tv_sec = 2;
 
-	while (1) {
+	while (listening) {
 		if (touched) memset(buffer, '\0', touched);
-		int res = netcode_read(&netcode, buffer, buffer_size);
-		if (res == EQEMPTY) {
+
+		if (netcode_read(&netcode, buffer, buffer_size) == EQEMPTY) {
 			touched = 0;
-			res = nanosleep(&time, &elapsed);
+			nanosleep(&time, &elapsed);
 			continue;
 		}
+
+		if (!strncmp(buffer, "!quit!", sizeof(char) * 6)) listening = 0;
+
 		printf("data: %s\n", buffer);
 		touched = strlen(buffer);
 	}
