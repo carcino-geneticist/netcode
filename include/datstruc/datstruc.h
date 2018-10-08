@@ -1,5 +1,5 @@
-#ifndef datstruc_h_
-#define datstruc_h_
+#ifndef datstruc_h
+#define datstruc_h
 
 #include "errors.h"
 #include "list.h"

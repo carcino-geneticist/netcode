@@ -1,8 +1,8 @@
-#ifndef queue_h_
-#define queue_h_
+#ifndef datstruc_queue_h
+#define datstruc_queue_h
 
 #ifndef datstruc_list_h
-#include "list.h"
+#include <datstruc/list.h>
 #endif
 
 struct queue_t {

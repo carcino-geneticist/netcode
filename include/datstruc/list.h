@@ -1,5 +1,5 @@
-#ifndef datstruc_list_h_
-#define datstruc_list_h_
+#ifndef datstruc_list_h
+#define datstruc_list_h
 
 struct list_t {
 	void *data;
