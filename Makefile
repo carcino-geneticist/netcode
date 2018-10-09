@@ -33,7 +33,7 @@ $(OBJECTS): $(BUILD)/%.o: $(SRC)/$(NAME)/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -fPIC $< -o $@
 
-$(TESTBIN): $(TARGET) $(TESTOBJ) $(INCLUDE)/$(NAME).h
+$(TESTBIN): $(TARGET) $(TESTOBJ)
 	$(CC) -Wall $(TESTOBJ) -I$(INCLUDE) -L$(LIB) $(TESTLIBS) -o $@
 
 $(TESTOBJ): $(TESTSRC)
