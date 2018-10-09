@@ -4,7 +4,7 @@
 #include <time.h>
 #include <errno.h>
 
-#include <netcode.h>
+#include <netcode/netcode.h>
 
 #ifndef PORT
 #define PORT 4545

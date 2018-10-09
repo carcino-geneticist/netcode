@@ -8,7 +8,8 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-#include <netcode.h>
+#include <netcode/netcode.h>
+#include <netcode/udp.h>
 #include <datstruc/datstruc.h>
 
 #define PACKET_SIZE 512
@@ -140,8 +141,12 @@ int netcode_read(struct netcode_state *state, char *buf, size_t len)
 
 int netcode_fini(struct netcode_state *state)
 {
-	pthread_mutex_destroy(&state->mutex);
 	pthread_cancel(state->listener);
+
+	pthread_mutex_lock(&state->mutex);
+	queue_delete(&state->cmd_objects);
+
+	pthread_mutex_destroy(&state->mutex);
 	pthread_exit(NULL);
 	return 0;
 }
