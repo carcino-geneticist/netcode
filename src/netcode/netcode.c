@@ -36,29 +36,10 @@ void *handle_packet(void *data)
 	pthread_exit(NULL);
 }
 
-int listener_init(short port)
-{
-	int sockfd = socket(PF_INET, SOCK_DGRAM, 0);
-	if (sockfd < 0) {
-		return -1;
-	}
-	struct sockaddr_in addr;
-	memset(&addr, '\0', sizeof(addr));
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(port);
-	addr.sin_addr.s_addr = INADDR_ANY;
-
-	if (bind(sockfd, (struct sockaddr*) &addr, sizeof(addr))) {
-		return -2;
-	}
-
-	return sockfd;
-}
-
 void *listener_main(void *data)
 {
 	int sockfd;
-	switch (sockfd = listener_init(((struct netcode_state *)data)->port)) {
+	switch (sockfd = udp_listen_socket(((struct netcode_state *)data)->port)) {
 	case -1: // bad socket
 		pthread_exit((void *) -1);
 		break;
@@ -112,6 +93,7 @@ void *listener_main(void *data)
 
 int netcode_init(struct netcode_state *state, int port)
 {
+	if (!state) { return EINVAL; }
 	memset(state, '\0', sizeof(struct netcode_state));
 
 	state->port = port;
