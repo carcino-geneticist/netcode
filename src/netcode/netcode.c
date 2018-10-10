@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <pthread.h>
+#include <errno.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -31,6 +32,9 @@ void *handle_packet(void *data)
 	queue_push(&args->state->cmd_objects, args->buffer);
 
 	pthread_mutex_unlock(&args->state->mutex);
+
+	sendto(args->sockfd, "ACK", 3, 0, 
+		(struct sockaddr *)&args->addr, sizeof(struct sockaddr_storage));
 
 	free(args);
 	pthread_exit(NULL);
