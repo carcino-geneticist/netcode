@@ -93,7 +93,6 @@ void *listener_main(void *data)
 
 int netcode_init(struct netcode_state *state, int port)
 {
-	if (!state) { return EINVAL; }
 	memset(state, '\0', sizeof(struct netcode_state));
 
 	state->port = port;

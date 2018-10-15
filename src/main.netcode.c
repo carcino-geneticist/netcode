@@ -15,10 +15,6 @@ int main(int argc, char **argv)
 	struct netcode_state netcode;
 	switch (netcode_init(&netcode, PORT))
 	{
-	case EINVAL:
-		printf("Received NULL Argument\n");
-		return -1;
-		break;
 	case EAGAIN:
 		printf("Insufficient System Resources\n");
 		return -1;
