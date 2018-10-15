@@ -14,6 +14,7 @@
 #include <datstruc/datstruc.h>
 
 #define PACKET_SIZE 512
+#define ACK "ACK"
 
 struct handler_args {
 	int sockfd;
@@ -33,7 +34,7 @@ void *handle_packet(void *data)
 
 	pthread_mutex_unlock(&args->state->mutex);
 
-	sendto(args->sockfd, "ACK", 3, 0, 
+	sendto(args->sockfd, ACK, sizeof(ACK), 0, 
 		(struct sockaddr *)&args->addr, sizeof(struct sockaddr_storage));
 
 	free(args);
