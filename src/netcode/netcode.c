@@ -24,23 +24,6 @@ struct handler_args {
 	struct sockaddr_storage addr;
 };
 
-void *handle_packet(void *data)
-{
-	struct handler_args *args = (struct handler_args *)data;
-
-	pthread_mutex_lock(&args->state->mutex);
-
-	queue_push(&args->state->cmd_objects, args->buffer);
-
-	pthread_mutex_unlock(&args->state->mutex);
-
-	sendto(args->sockfd, ACK, sizeof(ACK), 0, 
-		(struct sockaddr *)&args->addr, sizeof(struct sockaddr_storage));
-
-	free(args);
-	pthread_exit(NULL);
-}
-
 void *listener_main(void *data)
 {
 	int sockfd;
@@ -89,6 +72,23 @@ void *listener_main(void *data)
 		}
 	}
 	// dunno how we got here
+	pthread_exit(NULL);
+}
+
+void *listener_sender(void *data)
+{
+	struct handler_args *args = (struct handler_args *)data;
+
+	pthread_mutex_lock(&args->state->mutex);
+
+	queue_push(&args->state->cmd_objects, args->buffer);
+
+	pthread_mutex_unlock(&args->state->mutex);
+
+	sendto(args->sockfd, ACK, sizeof(ACK), 0, 
+		(struct sockaddr *)&args->addr, sizeof(struct sockaddr_storage));
+
+	free(args);
 	pthread_exit(NULL);
 }
 
